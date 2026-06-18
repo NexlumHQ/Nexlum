@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXLUM Whitepaper v1.0 — $LUM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background: #05050a;
+      color: #d8d8e8;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.7;
+    }
+    :root {
+      --blue:   #00c2ff;
+      --purple: #a855f7;
+      --grad:   linear-gradient(135deg, #00c2ff 0%, #a855f7 100%);
+      --dark:   #05050a;
+      --surface:#0d0d18;
+      --card:   #111120;
+      --border: rgba(255,255,255,0.08);
+      --text:   #e8e8f0;
+      --muted:  rgba(216,216,232,0.55);
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.4); border-radius: 99px; }
+
+    /* ── LAYOUT ── */
+    .wp-wrap {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 900px) {
+      .wp-wrap { grid-template-columns: 1fr; }
+      .wp-sidebar { display: none; }
+    }
+
+    /* ── SIDEBAR ── */
+    .wp-sidebar {
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 32px 0;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 24px 28px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .sidebar-brand {
+      font-family: 'Readex Pro', sans-serif;
+      font-size: 15px; font-weight: 600; letter-spacing: -0.03em;
+      background: var(--grad); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .sidebar-doc-label {
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); font-weight: 400;
+      padding: 0 24px; margin-bottom: 12px; margin-top: 20px;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 24px; font-size: 13px; color: var(--muted);
+      text-decoration: none; cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .sidebar-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .sidebar-link.active { color: var(--blue); border-left-color: var(--blue); background: rgba(0,194,255,0.05); }
+    .sidebar-link-num { font-size: 11px; color: rgba(168,85,247,0.5); font-family: 'Space Mono', monospace; }
+    .sidebar-back {
+      margin: 24px; display: block;
+      font-size: 12px; color: var(--muted); text-decoration: none;
+      padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: 8px; text-align: center;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .sidebar-back:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+
+    /* ── MAIN CONTENT ── */
+    .wp-main { padding: 64px 72px 120px; max-width: 840px; }
+    @media (max-width: 1100px) { .wp-main { padding: 48px 40px 100px; } }
+    @media (max-width: 600px) { .wp-main { padding: 32px 20px 80px; } }
+
+    /* ── COVER ── */
+    .wp-cover {
+      margin-bottom: 72px; padding-bottom: 56px;
+      border-bottom: 1px solid var(--border);
+    }
+    .wp-cover-eyebrow {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--blue); font-weight: 500; margin-bottom: 20px;
+    }
+    .wp-cover-title {
+      font-family: 'Readex Pro', sans-serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 500; line-height: 1.05;
+      letter-spacing: -0.04em; color: #fff;
+      margin-bottom: 20px;
+    }
+    .wp-cover-title span {
+      background: var(--grad); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .wp-cover-sub {
+      font-size: 16px; color: var(--muted); max-width: 520px;
+      line-height: 1.65; font-weight: 300; margin-bottom: 32px;
+    }
+    .wp-meta-row {
+      display: flex; flex-wrap: wrap; gap: 24px;
+    }
+    .wp-meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .wp-meta-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(168,85,247,0.6); }
+    .wp-meta-val { font-size: 13px; color: var(--text); font-family: 'Space Mono', monospace; }
+
+    /* ── SECTIONS ── */
+    .wp-section { margin-bottom: 72px; scroll-margin-top: 32px; }
+    .wp-section-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; color: rgba(168,85,247,0.5);
+      letter-spacing: 0.12em; margin-bottom: 10px;
+    }
+    .wp-h2 {
+      font-family: 'Readex Pro', sans-serif;
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 500; letter-spacing: -0.03em; color: #fff;
+      margin-bottom: 20px; line-height: 1.15;
+    }
+    .wp-h3 {
+      font-size: 16px; font-weight: 500; color: var(--text);
+      margin: 28px 0 12px; letter-spacing: -0.01em;
+    }
+    .wp-p {
+      font-size: 15px; line-height: 1.75; color: var(--muted);
+      font-weight: 300; margin-bottom: 16px;
+    }
+    .wp-p strong { color: var(--text); font-weight: 500; }
+    .wp-ul {
+      margin: 16px 0 16px 4px;
+      list-style: none;
+    }
+    .wp-ul li {
+      font-size: 14px; line-height: 1.65; color: var(--muted);
+      font-weight: 300; padding: 8px 0 8px 20px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .wp-ul li:first-child { border-top: 1px solid var(--border); }
+    .wp-ul li::before {
+      content: '→'; position: absolute; left: 0;
+      color: var(--blue); font-size: 12px;
+    }
+    .wp-ul li strong { color: var(--text); font-weight: 500; }
+
+    /* ── CALLOUT BOX ── */
+    .wp-callout {
+      background: rgba(0,194,255,0.05);
+      border: 1px solid rgba(0,194,255,0.15);
+      border-left: 3px solid var(--blue);
+      border-radius: 10px; padding: 20px 24px;
+      margin: 24px 0; font-size: 14px; color: var(--muted);
+      line-height: 1.65; font-weight: 300;
+    }
+    .wp-callout strong { color: var(--text); }
+    .wp-callout-purple {
+      background: rgba(168,85,247,0.05);
+      border-color: rgba(168,85,247,0.15);
+      border-left-color: var(--purple);
+    }
+
+    /* ── TABLE ── */
+    .wp-table-wrap { overflow-x: auto; margin: 24px 0; }
+    .wp-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13px;
+    }
+    .wp-table th {
+      text-align: left; padding: 12px 16px;
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); font-weight: 500;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .wp-table td {
+      padding: 12px 16px; color: var(--muted);
+      border-bottom: 1px solid var(--border); font-weight: 300;
+    }
+    .wp-table td:first-child { color: var(--text); font-weight: 400; }
+    .wp-table tr:last-child td { border-bottom: none; }
+    .wp-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* ── DIVIDER ── */
+    .wp-divider {
+      border: none; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(168,85,247,0.2), transparent);
+      margin: 48px 0;
+    }
+
+    /* ── TOKEN PIE (CSS only) ── */
+    .pie-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; margin-top: 24px; }
+    .pie-legend-item { display: flex; align-items: center; gap: 10px; }
+    .pie-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .pie-name { font-size: 13px; color: var(--muted); font-weight: 300; }
+    .pie-pct { font-size: 13px; font-family: 'Space Mono', monospace; color: var(--text); margin-left: auto; }
+
+    /* ── FOOTER ── */
+    .wp-footer {
+      margin-top: 80px; padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .wp-footer-copy { font-size: 12px; color: rgba(216,216,232,0.3); }
+    .wp-footer-ver { font-size: 12px; font-family: 'Space Mono', monospace; color: rgba(168,85,247,0.4); }
+
+    /* ── HIGHLIGHT ── */
+    .hl-blue { color: var(--blue); }
+    .hl-purple { color: var(--purple); }
+    .hl-grad {
+      background: var(--grad); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+      font-weight: 500;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      .wp-sidebar { display: none; }
+      .wp-wrap { grid-template-columns: 1fr; }
+      .wp-main { padding: 40px; }
+      body { background: #fff; color: #111; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wp-wrap">
+
+  <!-- ════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════ -->
+  <aside class="wp-sidebar">
+    <div class="sidebar-logo">
+        <img src="data:image/jpeg;base64,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zzzzzzzzzzzzzzzzzzzzzzzzzziQh/vEoIBu07DzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzCR/vEquRUH1m2jzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyRz/NqmxuLSnUNcpDzzzzzzzzzzzzzzzzzzzzzzzzzzzzwQ7+W5ABF7I3eiYumzTzzzzzzzzzzzzzzzzzzzzzzzzzzjBb+dSwpg9Bs4GSWD3pDTzzzzzzzzzzzzzzzzzzzzzzzzyi7+mT307rwcYvcI/5X5DTzzzzzzzzzzzzzzzzzzzzzzzzwS/lqTmR6FUda8K3j1f4Jjzzzzzzzzzzzzzzzzzzzzzzzzg+lhvyUcfQHlESXkLlO24rzzzzjzzzzzzzzzzzzzzzzzyj/lz/AA9vnC/YVAoVXADB/U+Q0888888888888888888884e5YlfPB6znlBAEymdChqR+86Ow8oE0088888888888888krMke9589vqqBA5wJwENnBS08+a8o6k88888888888888AdzgjU9oS/8AXQgRf90ahHzTgd2/vhnrvtPPPPPPPPPPPPPAOZ3P/Of1uyhKlNZIMxXpSADpc1PPvvdWPPPPPPPPPPPPOFLaa5HKelv5YhBK+5XJ8ysBerDK/vvuW6vPPPPPPPPPPPPFhN49fqZlpsmLc4UKlinDsIMwu4fvv+VO1PPPPPPPPPPPKHqwXvotlkpezQVNCvFCRn2GqAqwfvOVY51PPPPPPPPPPPKPd1YR+XllgNHq9+pfmuzVbnSHaQf/AC/YxVzzzzzzzzzzzySlWyyvXHxRloNGSAd7jiu4lECqcn//AAQYVc88888888888opVb4SDSLeBM1hUKkONGHzUwaEXCThf1NVU88888888888of7mxbqqQxTNqMhKTR4zJ0X9IUVoBouSEXc88888888888s1Q0kbaLDfKMInYnneRMDQ6UQkeWy1H+V/U888888888888V7t8gabF+VpZ0YGJiHJV6BpwU0/8m/Jpq0888888888888sPwXd6Es6SAWOpF/lMmHIOmfrcNytD7eg8888888888888ow9vjyyJ7OYDNzQYn3XeG0X0rEvA3pUdc8888888888888sY3th0wTbPLwWkUpvDpbegNH5Cf7Pog+8888888888888888Yxt0mlTD8lq9pMF00qXrTsD/I5Wc1A8888888888888888MAWXbKK/P5Hlyh9WZybOVg2wKnHOvc888888888888888888s0f9bt5WgPw71uqSiUQY8VZn8/k88888888888888888888Ms+/tqJ72dGM1KXg9MTQ46W/wU8888888888888888888888ME29PyKe+HJsU8MHWlHk7kc8888888888888888888888888MY8+u7iH9O3gcptO/6M88888888888888888888888888888MQY+sP9JBR/N/6Eo8888888888888888888888888888888888ESySzyEAM888888888888888888888888888888888888888ssc88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888/8QAKhEBAQEAAQEFCQADAQAAAAAAAQARECEgMUBxsTBBUFFhkaHR8ICBweH/2gAIAQMBAT8Q/wAKtt+F7bbwH4Sss3ORGmsZR8F22WWxgVMC2Ol7z85fcPTifBFllnFlIWwkcdPl/dt+SenEj4FssvBldSNXuLX36OfyD04kfAll4Mbd6v4H98pc+ryEfvHpxPgaygGrJpPN/X7kXrzkF0+cenEj4Cy2UQOg6ecuQgidPnnpxI8dvYUr859eMggg4DnmnpxI8ay8vDuX5z68ZBByB+6enEjxq2xw8n5T6wQQdgAZ5/AjxjLrl1xw8n5T6wQRByAzz+BEQWWHh2V1uJw8n5z6wg7IAM87gRBd0tbvs+GZRv7uJw8O5H7z1hDsgBzzOAQSCNeE4p8M8dMdi8O7D7z17YBIzzIQu4EFdeQGOe2+2Z44I85bHDyn7z17YEJz/RwToIr2IBgTPYJn27xX+7+/5bEuHkH3nrDtFDgPDZ7NUMh7BBM+3eKGH3QppwDPJ9yfXgHEY8WA8NuyEjB+s9gIOD7Z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" width="22" height="22" alt="NEXLUM" style="border-radius:4px;object-fit:cover;" />
+      <span class="sidebar-brand">NEXLUM</span>
+    </div>
+
+    <div class="sidebar-doc-label">Whitepaper v1.0</div>
+
+    <a class="sidebar-link active" href="#abstract"><span class="sidebar-link-num">00</span> Abstract</a>
+    <a class="sidebar-link" href="#introduction"><span class="sidebar-link-num">01</span> Introduction</a>
+    <a class="sidebar-link" href="#problem"><span class="sidebar-link-num">02</span> The Problem</a>
+    <a class="sidebar-link" href="#solution"><span class="sidebar-link-num">03</span> The Solution</a>
+    <a class="sidebar-link" href="#architecture"><span class="sidebar-link-num">04</span> Architecture</a>
+    <a class="sidebar-link" href="#agents"><span class="sidebar-link-num">05</span> AI Agent Layer</a>
+    <a class="sidebar-link" href="#marketplace"><span class="sidebar-link-num">06</span> Marketplace</a>
+    <a class="sidebar-link" href="#tokenomics"><span class="sidebar-link-num">07</span> Tokenomics</a>
+    <a class="sidebar-link" href="#governance"><span class="sidebar-link-num">08</span> Governance</a>
+    <a class="sidebar-link" href="#security"><span class="sidebar-link-num">09</span> Security</a>
+    <a class="sidebar-link" href="#roadmap"><span class="sidebar-link-num">10</span> Roadmap</a>
+    <a class="sidebar-link" href="#disclaimer"><span class="sidebar-link-num">11</span> Disclaimer</a>
+
+    <a class="sidebar-back" href="index.html">← Back to Website</a>
+  </aside>
+
+  <!-- ════════════════════════════════
+       MAIN CONTENT
+  ════════════════════════════════ -->
+  <main class="wp-main">
+
+    <!-- COVER -->
+    <div class="wp-cover">
+      <div class="wp-cover-eyebrow">Technical Whitepaper · Version 1.0 · 2025</div>
+      <h1 class="wp-cover-title">
+        NEXLUM<br/><span>Intelligence, Illuminated</span>
+      </h1>
+      <p class="wp-cover-sub">
+        A decentralized AI agent infrastructure protocol enabling permissionless deployment, monetization, and coordination of autonomous agents on-chain — powered by $LUM.
+      </p>
+      <div class="wp-meta-row">
+        <div class="wp-meta-item">
+          <span class="wp-meta-label">Token</span>
+          <span class="wp-meta-val">$LUM</span>
+        </div>
+        <div class="wp-meta-item">
+          <span class="wp-meta-label">Network</span>
+          <span class="wp-meta-val">BASE (EVM)</span>
+        </div>
+        <div class="wp-meta-item">
+          <span class="wp-meta-label">Total Supply</span>
+          <span class="wp-meta-val">1,000,000,000</span>
+        </div>
+        <div class="wp-meta-item">
+          <span class="wp-meta-label">Version</span>
+          <span class="wp-meta-val">v1.0 — 2025</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 00. ABSTRACT -->
+    <section class="wp-section" id="abstract">
+      <div class="wp-section-num">00 — ABSTRACT</div>
+      <h2 class="wp-h2">Abstract</h2>
+      <p class="wp-p">
+        NEXLUM is a permissionless, on-chain protocol for the creation, deployment, and monetization of autonomous AI agents. Built on the BASE network, NEXLUM introduces a dual-pillar architecture combining an <strong>Intelligence Layer</strong> (for AI agent execution) and an <strong>Economy Layer</strong> (powered by the $LUM token) to form a self-sustaining ecosystem where human participants and autonomous agents interact, transact, and co-evolve.
+      </p>
+      <p class="wp-p">
+        This document outlines the technical foundations, economic design, governance model, and development roadmap of the NEXLUM protocol. It is intended for participants who seek to understand the system at a deep level before participating as holders, builders, or agent operators.
+      </p>
+      <div class="wp-callout">
+        <strong>Core thesis:</strong> The next era of AI will not be owned by corporations. It will be owned by protocols. NEXLUM is that protocol.
+      </div>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 01. INTRODUCTION -->
+    <section class="wp-section" id="introduction">
+      <div class="wp-section-num">01 — INTRODUCTION</div>
+      <h2 class="wp-h2">Introduction</h2>
+      <p class="wp-p">
+        Artificial intelligence has emerged as the defining technology of the 2020s. Yet despite its transformative potential, access to AI infrastructure remains concentrated in the hands of a small number of technology companies. Developers depend on proprietary APIs. Users surrender their data and attention. Economic value accrues to centralized intermediaries rather than to the participants who create it.
+      </p>
+      <p class="wp-p">
+        Simultaneously, decentralized networks have demonstrated that it is possible to build open, permissionless infrastructure for finance, storage, and computation. What has not yet existed is a purpose-built, decentralized infrastructure layer specifically designed for <strong>AI agent coordination and monetization</strong>.
+      </p>
+      <p class="wp-p">
+        NEXLUM was designed to fill that gap. By combining the composability of on-chain smart contracts with the execution power of modern AI models, NEXLUM creates a new primitive: the <span class="hl-grad">on-chain AI agent</span>.
+      </p>
+
+      <h3 class="wp-h3">Key Definitions</h3>
+      <ul class="wp-ul">
+        <li><strong>AI Agent</strong> — An autonomous software entity that perceives its environment, reasons over it, and takes actions to achieve defined objectives without continuous human input.</li>
+        <li><strong>On-Chain Agent</strong> — An AI agent whose configuration, state, permissions, and economic interactions are recorded and settled on a public blockchain.</li>
+        <li><strong>$LUM</strong> — The native utility and governance token of the NEXLUM protocol.</li>
+        <li><strong>NexDAO</strong> — The decentralized autonomous organization governing protocol parameters and treasury allocation.</li>
+      </ul>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 02. THE PROBLEM -->
+    <section class="wp-section" id="problem">
+      <div class="wp-section-num">02 — THE PROBLEM</div>
+      <h2 class="wp-h2">The Problem</h2>
+
+      <h3 class="wp-h3">2.1 AI Is Centralized by Default</h3>
+      <p class="wp-p">
+        Every major AI platform today is a walled garden. OpenAI, Google DeepMind, Anthropic, and Mistral all offer powerful models — but access is mediated through centralized APIs, proprietary infrastructure, and usage-based pricing that benefits the platform. When these companies change their terms, raise prices, or shut down models, every downstream application fails simultaneously.
+      </p>
+      <p class="wp-p">
+        There is no decentralized alternative. No open marketplace. No permissionless layer where anyone can deploy an AI agent and earn from it without seeking approval from a central authority.
+      </p>
+
+      <h3 class="wp-h3">2.2 Agent Economy Has No Settlement Layer</h3>
+      <p class="wp-p">
+        As AI agents become more capable, they will increasingly need to interact with each other: purchasing data, delegating subtasks, splitting revenues, and negotiating terms. The current internet offers no neutral, programmable settlement layer for agent-to-agent economic activity. Traditional payment systems are too slow, too expensive, and require human intermediaries.
+      </p>
+
+      <h3 class="wp-h3">2.3 Value Capture Is Broken</h3>
+      <p class="wp-p">
+        Developers who build AI applications today do not capture a proportional share of the value they create. They pay for model access, pay for hosting, pay for bandwidth — and then their users are sold advertising or upsold premium tiers by the platform they built on top of. NEXLUM inverts this dynamic.
+      </p>
+
+      <div class="wp-callout wp-callout-purple">
+        <strong>The three structural failures of today's AI economy:</strong> centralized gatekeeping, no agent-native settlement layer, and misaligned value capture. NEXLUM addresses all three.
+      </div>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 03. THE SOLUTION -->
+    <section class="wp-section" id="solution">
+      <div class="wp-section-num">03 — THE SOLUTION</div>
+      <h2 class="wp-h2">The Solution: NEXLUM Protocol</h2>
+      <p class="wp-p">
+        NEXLUM is a two-pillar protocol. The <strong class="hl-blue">Intelligence Pillar</strong> provides the infrastructure for deploying and running AI agents on-chain. The <strong class="hl-purple">Economy Pillar</strong> provides the incentive system, settlement layer, and governance mechanism through the $LUM token.
+      </p>
+      <p class="wp-p">
+        Together, these pillars form a closed loop: agents produce value → value is captured in $LUM → $LUM incentivizes more agents → the network grows. This flywheel is self-reinforcing and does not require a central operator to maintain.
+      </p>
+
+      <div class="wp-callout">
+        <strong>Design principle:</strong> NEXLUM is built to be maximally composable. Any smart contract can call a NEXLUM agent. Any NEXLUM agent can call any smart contract. The protocol places no limits on what can be built on top of it.
+      </div>
+
+      <h3 class="wp-h3">Core Protocol Properties</h3>
+      <ul class="wp-ul">
+        <li><strong>Permissionless</strong> — No KYC, no whitelist. Any wallet can deploy an agent or use the marketplace.</li>
+        <li><strong>Composable</strong> — Agents can be combined, nested, and orchestrated like smart contract primitives.</li>
+        <li><strong>Transparent</strong> — All agent configurations, transactions, and earnings are on-chain and auditable.</li>
+        <li><strong>Self-Sovereign</strong> — Agents are owned by the wallet that deployed them. No platform can revoke access.</li>
+        <li><strong>Economically Aligned</strong> — Protocol fees flow to the treasury, which is controlled by $LUM holders.</li>
+      </ul>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 04. ARCHITECTURE -->
+    <section class="wp-section" id="architecture">
+      <div class="wp-section-num">04 — ARCHITECTURE</div>
+      <h2 class="wp-h2">Technical Architecture</h2>
+
+      <h3 class="wp-h3">4.1 Protocol Stack</h3>
+      <p class="wp-p">NEXLUM is composed of four distinct layers, each responsible for a specific set of functions:</p>
+
+      <div class="wp-table-wrap">
+        <table class="wp-table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Name</th>
+              <th>Function</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>L1</td>
+              <td>Settlement</td>
+              <td>BASE network — final transaction settlement, token transfers, agent ownership records</td>
+            </tr>
+            <tr>
+              <td>L2</td>
+              <td>Execution</td>
+              <td>Agent Runtime — off-chain AI computation with on-chain commitment proofs</td>
+            </tr>
+            <tr>
+              <td>L3</td>
+              <td>Coordination</td>
+              <td>NexBridge — cross-chain agent messaging and liquidity routing</td>
+            </tr>
+            <tr>
+              <td>L4</td>
+              <td>Application</td>
+              <td>Marketplace, Analytics (LumLens), Governance (NexDAO)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="wp-h3">4.2 Agent Lifecycle</h3>
+      <ul class="wp-ul">
+        <li><strong>Instantiation</strong> — An agent is created by submitting a configuration transaction. The configuration (objective, tools, triggers, output format) is stored on-chain as a hash; the full config is available via decentralized storage (IPFS/Arweave).</li>
+        <li><strong>Activation</strong> — The agent is activated when its owner funds it with $LUM. The Agent Runtime picks up the configuration and begins executing tasks.</li>
+        <li><strong>Execution</strong> — Tasks are executed off-chain by the NEXLUM Execution Network. Results and proofs are submitted on-chain at a configurable frequency.</li>
+        <li><strong>Settlement</strong> — When an agent completes a paid task, $LUM is transferred from the requester to the agent owner, minus a protocol fee, all atomically on-chain.</li>
+        <li><strong>Termination</strong> — An agent can be paused or terminated by its owner at any time. Uncompleted tasks are refunded automatically.</li>
+      </ul>
+
+      <h3 class="wp-h3">4.3 Execution Network</h3>
+      <p class="wp-p">
+        The NEXLUM Execution Network is a decentralized set of node operators responsible for running agent logic off-chain and submitting verifiable proofs on-chain. Node operators stake $LUM as collateral, which can be slashed in the event of malicious behavior or persistent downtime. This creates a strong economic incentive for honest, reliable execution.
+      </p>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 05. AI AGENT LAYER -->
+    <section class="wp-section" id="agents">
+      <div class="wp-section-num">05 — AI AGENT LAYER</div>
+      <h2 class="wp-h2">AI Agent Layer</h2>
+
+      <h3 class="wp-h3">5.1 Agent Types</h3>
+      <div class="wp-table-wrap">
+        <table class="wp-table">
+          <thead>
+            <tr>
+              <th>Agent Type</th>
+              <th>Primary Use Case</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Research Agent</td>
+              <td>Data gathering & synthesis</td>
+              <td>Monitor on-chain metrics, summarize daily</td>
+            </tr>
+            <tr>
+              <td>Trading Agent</td>
+              <td>Automated market strategies</td>
+              <td>Execute DCA strategy on trigger conditions</td>
+            </tr>
+            <tr>
+              <td>Content Agent</td>
+              <td>Content generation & curation</td>
+              <td>Generate daily market reports</td>
+            </tr>
+            <tr>
+              <td>Automation Agent</td>
+              <td>Workflow automation</td>
+              <td>Rebalance portfolio on drift threshold</td>
+            </tr>
+            <tr>
+              <td>Coordinator Agent</td>
+              <td>Orchestrate other agents</td>
+              <td>Manage a fleet of sub-agents toward a goal</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="wp-h3">5.2 Agent Configuration</h3>
+      <p class="wp-p">
+        Agents are configured using a declarative JSON schema stored on-chain. The schema defines the agent's objective, permitted tools, execution frequency, budget ceiling, and output handlers. Non-technical users interact with the configuration through the NEXLUM visual builder, which translates natural language instructions into the underlying schema.
+      </p>
+
+      <h3 class="wp-h3">5.3 On-Chain Memory</h3>
+      <p class="wp-p">
+        NEXLUM agents can maintain persistent state between executions using the on-chain memory store — a key-value structure tied to the agent's smart contract identity. This enables agents to learn from previous runs, accumulate context, and improve their outputs over time without requiring a centralized database.
+      </p>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 06. MARKETPLACE -->
+    <section class="wp-section" id="marketplace">
+      <div class="wp-section-num">06 — MARKETPLACE</div>
+      <h2 class="wp-h2">Agent Marketplace</h2>
+      <p class="wp-p">
+        The NEXLUM Marketplace is the primary application layer where agent creators and users meet. It functions as a fully on-chain exchange for AI agent services, where listings, pricing, reputation, and payments are all settled transparently.
+      </p>
+
+      <h3 class="wp-h3">6.1 Listing Model</h3>
+      <ul class="wp-ul">
+        <li><strong>Per-call pricing</strong> — Requesters pay $LUM per individual task execution.</li>
+        <li><strong>Subscription model</strong> — Users lock $LUM for recurring access to an agent over a defined period.</li>
+        <li><strong>Bundle pricing</strong> — Agent creators can package multiple agents into a suite, sold at a combined rate.</li>
+        <li><strong>Open-source agents</strong> — Creators can list agents as free and open-source, earning reputation rather than fees.</li>
+      </ul>
+
+      <h3 class="wp-h3">6.2 Revenue Distribution</h3>
+      <div class="wp-table-wrap">
+        <table class="wp-table">
+          <thead>
+            <tr>
+              <th>Recipient</th>
+              <th>Share</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Agent Creator</td>
+              <td>85%</td>
+              <td>Paid immediately on task settlement</td>
+            </tr>
+            <tr>
+              <td>Protocol Treasury</td>
+              <td>10%</td>
+              <td>Governed by NexDAO</td>
+            </tr>
+            <tr>
+              <td>Execution Node Operators</td>
+              <td>5%</td>
+              <td>Distributed pro-rata by task volume</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="wp-h3">6.3 Reputation System</h3>
+      <p class="wp-p">
+        Each agent accrues an on-chain reputation score based on: task completion rate, output quality ratings from requesters, uptime consistency, and community governance ratings. Reputation scores are non-transferable and cannot be purchased — they are earned exclusively through performance.
+      </p>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 07. TOKENOMICS -->
+    <section class="wp-section" id="tokenomics">
+      <div class="wp-section-num">07 — TOKENOMICS</div>
+      <h2 class="wp-h2">$LUM Tokenomics</h2>
+
+      <p class="wp-p">
+        $LUM is the native utility, governance, and incentive token of the NEXLUM protocol. Total supply is fixed at <strong>1,000,000,000 $LUM</strong> with no inflation mechanism. All protocol fees collected in $LUM flow to the NexDAO treasury.
+      </p>
+
+      <h3 class="wp-h3">7.1 Token Utility</h3>
+      <ul class="wp-ul">
+        <li><strong>Agent execution payment</strong> — All agent tasks on NEXLUM are paid in $LUM.</li>
+        <li><strong>Node operator staking</strong> — Execution node operators stake $LUM as collateral.</li>
+        <li><strong>Governance voting</strong> — $LUM holders vote on protocol proposals in NexDAO.</li>
+        <li><strong>Marketplace access</strong> — Certain premium marketplace features require $LUM staking.</li>
+        <li><strong>Agent-to-agent settlement</strong> — Agents pay each other in $LUM for delegated tasks.</li>
+      </ul>
+
+      <h3 class="wp-h3">7.2 Distribution</h3>
+      <div class="wp-table-wrap">
+        <table class="wp-table">
+          <thead>
+            <tr>
+              <th>Allocation</th>
+              <th>%</th>
+              <th>Amount</th>
+              <th>Vesting</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Community & Airdrop</td>
+              <td>40%</td>
+              <td>400,000,000</td>
+              <td>Linear over 24 months post-launch</td>
+            </tr>
+            <tr>
+              <td>Ecosystem Growth</td>
+              <td>25%</td>
+              <td>250,000,000</td>
+              <td>Governed by NexDAO grants</td>
+            </tr>
+            <tr>
+              <td>Team & Advisors</td>
+              <td>15%</td>
+              <td>150,000,000</td>
+              <td>12-month cliff, 36-month linear</td>
+            </tr>
+            <tr>
+              <td>Liquidity Provision</td>
+              <td>12%</td>
+              <td>120,000,000</td>
+              <td>Immediate at launch for DEX pools</td>
+            </tr>
+            <tr>
+              <td>Treasury Reserve</td>
+              <td>8%</td>
+              <td>80,000,000</td>
+              <td>Multi-sig, governed by NexDAO</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pie-legend">
+        <div class="pie-legend-item"><div class="pie-dot" style="background:#00c2ff;"></div><span class="pie-name">Community & Airdrop</span><span class="pie-pct">40%</span></div>
+        <div class="pie-legend-item"><div class="pie-dot" style="background:#3a7fff;"></div><span class="pie-name">Ecosystem Growth</span><span class="pie-pct">25%</span></div>
+        <div class="pie-legend-item"><div class="pie-dot" style="background:#7c3aed;"></div><span class="pie-name">Team & Advisors</span><span class="pie-pct">15%</span></div>
+        <div class="pie-legend-item"><div class="pie-dot" style="background:#a855f7;"></div><span class="pie-name">Liquidity Provision</span><span class="pie-pct">12%</span></div>
+        <div class="pie-legend-item"><div class="pie-dot" style="background:#c084fc;"></div><span class="pie-name">Treasury Reserve</span><span class="pie-pct">8%</span></div>
+      </div>
+
+      <h3 class="wp-h3">7.3 Fee Model & Burn Mechanism</h3>
+      <p class="wp-p">
+        Of the 10% protocol fee collected on each marketplace transaction, <strong>50% (5% of total) is burned permanently</strong>, reducing total supply over time. The remaining 50% flows to the NexDAO treasury for ecosystem development. This creates long-term deflationary pressure proportional to network activity.
+      </p>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 08. GOVERNANCE -->
+    <section class="wp-section" id="governance">
+      <div class="wp-section-num">08 — GOVERNANCE</div>
+      <h2 class="wp-h2">Governance — NexDAO</h2>
+      <p class="wp-p">
+        NexDAO is the on-chain governance body of NEXLUM. All $LUM holders are automatically members. Governance power is proportional to $LUM held and staked in the governance contract.
+      </p>
+
+      <h3 class="wp-h3">8.1 Governable Parameters</h3>
+      <ul class="wp-ul">
+        <li>Protocol fee rate (default: 10%)</li>
+        <li>Burn ratio of protocol fees (default: 50%)</li>
+        <li>Treasury grant allocations</li>
+        <li>Node operator collateral requirements</li>
+        <li>Smart contract upgrades (via timelocked proxy)</li>
+        <li>New product feature activation</li>
+      </ul>
+
+      <h3 class="wp-h3">8.2 Proposal Process</h3>
+      <div class="wp-table-wrap">
+        <table class="wp-table">
+          <thead>
+            <tr><th>Stage</th><th>Duration</th><th>Threshold</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Discussion</td><td>5 days</td><td>Open (no threshold)</td></tr>
+            <tr><td>Formal Proposal</td><td>3 days</td><td>1,000,000 $LUM staked</td></tr>
+            <tr><td>Voting</td><td>7 days</td><td>Quorum: 5% of circulating supply</td></tr>
+            <tr><td>Timelock</td><td>48 hours</td><td>Automatic on passing</td></tr>
+            <tr><td>Execution</td><td>—</td><td>Any wallet can trigger</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 09. SECURITY -->
+    <section class="wp-section" id="security">
+      <div class="wp-section-num">09 — SECURITY</div>
+      <h2 class="wp-h2">Security Model</h2>
+      <p class="wp-p">
+        NEXLUM treats security as a first-class protocol property. The following measures are built into the protocol design and will be in place prior to mainnet launch.
+      </p>
+
+      <ul class="wp-ul">
+        <li><strong>Smart Contract Audits</strong> — All core protocol contracts will be audited by at least two independent firms before mainnet. Audit reports will be published in full.</li>
+        <li><strong>Bug Bounty Program</strong> — A rolling bug bounty program will be active from testnet onward, with rewards denominated in $LUM up to $500,000 equivalent for critical vulnerabilities.</li>
+        <li><strong>Timelocked Upgrades</strong> — All protocol upgrades are subject to a minimum 48-hour timelock, giving users the opportunity to exit before changes take effect.</li>
+        <li><strong>Multi-Sig Treasury</strong> — The NexDAO treasury is controlled by a 5-of-9 multi-signature wallet, with signers distributed across geographies and organizations.</li>
+        <li><strong>Node Operator Slashing</strong> — Execution nodes that submit fraudulent proofs or exhibit extended downtime face automatic slashing of their staked $LUM collateral.</li>
+        <li><strong>Agent Sandboxing</strong> — Agent execution environments are sandboxed and cannot access wallet private keys, other agents' state, or protocol admin functions.</li>
+      </ul>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 10. ROADMAP -->
+    <section class="wp-section" id="roadmap">
+      <div class="wp-section-num">10 — ROADMAP</div>
+      <h2 class="wp-h2">Development Roadmap</h2>
+
+      <div class="wp-table-wrap">
+        <table class="wp-table">
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Timeline</th>
+              <th>Milestones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Phase 1 — Genesis</td>
+              <td>Q4 2025</td>
+              <td>Token launch on BASE, whitepaper v1, website, community building, initial DEX liquidity</td>
+            </tr>
+            <tr>
+              <td>Phase 2 — Ignition</td>
+              <td>Q1 2026</td>
+              <td>Agent builder beta, Marketplace v0.1, first 1,000 agents, NexDAO governance live, smart contract audit</td>
+            </tr>
+            <tr>
+              <td>Phase 3 — Expansion</td>
+              <td>Q2–Q3 2026</td>
+              <td>NexBridge cross-chain, LumLens analytics, agent-to-agent economy, CEX listing pursuit, 10,000+ active agents</td>
+            </tr>
+            <tr>
+              <td>Phase 4 — Convergence</td>
+              <td>Q4 2026+</td>
+              <td>Full protocol decentralization, mobile app, enterprise API, Agent SDK v1, NEXLUM v2 protocol upgrade</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="wp-divider" />
+
+    <!-- 11. DISCLAIMER -->
+    <section class="wp-section" id="disclaimer">
+      <div class="wp-section-num">11 — DISCLAIMER</div>
+      <h2 class="wp-h2">Disclaimer</h2>
+      <div class="wp-callout wp-callout-purple">
+        <p class="wp-p" style="margin-bottom:12px;">
+          This whitepaper is for <strong>informational purposes only</strong> and does not constitute financial advice, investment advice, or a solicitation to purchase securities. $LUM tokens are utility tokens designed to power the NEXLUM protocol and are not intended to represent ownership, equity, or a claim on profits.
+        </p>
+        <p class="wp-p" style="margin-bottom:12px;">
+          Purchasing or holding $LUM involves significant risk, including the risk of total loss. Cryptocurrency markets are highly volatile. Past performance is not indicative of future results. NEXLUM makes no representations or warranties as to the accuracy or completeness of the information in this document.
+        </p>
+        <p class="wp-p" style="margin-bottom:0;">
+          This document may be updated over time. The most current version will always be available at the official NEXLUM website. All forward-looking statements are subject to change without notice.
+        </p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="wp-footer">
+      <div class="wp-footer-copy">© 2025 NEXLUM Protocol. All rights reserved.</div>
+      <div class="wp-footer-ver">WHITEPAPER v1.0</div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Active sidebar link on scroll
+  const sections = document.querySelectorAll('.wp-section');
+  const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        sidebarLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => obs.observe(s));
+</script>
+
+</body>
+</html>
